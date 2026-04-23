@@ -48,9 +48,9 @@ return [
         'url' => env('QUOTES_API_URL', 'https://dummyjson.com/quotes/random'),
     ],
 
-    'deepl' => [
-        'url' => env('DEEPL_API_URL', 'https://api-free.deepl.com/v2'),
-        'key' => env('DEEPL_API_KEY'),
+    'google_translate' => [
+        'url' => env('GOOGLE_TRANSLATE_API_URL', 'https://translation.googleapis.com/language/translate/v2'),
+        'key' => env('GOOGLE_TRANSLATE_API_KEY'),
     ],
 
 ];

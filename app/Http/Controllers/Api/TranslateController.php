@@ -15,8 +15,8 @@ class TranslateController extends Controller
     {
         $validated = $request->validate([
             'text' => 'required|string|max:5000',
-            'target_lang' => 'required|string|size:2|alpha',
-            'source_lang' => 'nullable|string|size:2|alpha',
+            'target_lang' => 'required|string|max:10|regex:/^[A-Za-z]{2}(-[A-Za-z]{2,4})?$/',
+            'source_lang' => 'nullable|string|max:10|regex:/^[A-Za-z]{2}(-[A-Za-z]{2,4})?$/',
         ]);
 
         $translated = $this->service->translate(

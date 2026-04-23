@@ -10,8 +10,8 @@ class TranslateService
 {
     public function translate(string $text, string $targetLang, ?string $sourceLang = null): string
     {
-        $target = strtoupper($targetLang);
-        $source = $sourceLang ? strtoupper($sourceLang) : null;
+        $target = strtolower($targetLang);
+        $source = $sourceLang ? strtolower($sourceLang) : null;
 
         $cached = TranslationCache::where('source_text', $text)
             ->where('target_lang', $target)
@@ -22,31 +22,32 @@ class TranslateService
             return $cached->translated_text;
         }
 
-        $apiKey = config('services.deepl.key');
+        $apiKey = config('services.google_translate.key');
         if (empty($apiKey)) {
-            throw new RuntimeException('DEEPL_API_KEY is not configured');
+            throw new RuntimeException('GOOGLE_TRANSLATE_API_KEY is not configured');
         }
 
-        $base = config('services.deepl.url');
+        $base = config('services.google_translate.url');
+
         $payload = [
-            'text' => [$text],
-            'target_lang' => $target,
+            'q' => $text,
+            'target' => $target,
+            'format' => 'text',
         ];
         if ($source) {
-            $payload['source_lang'] = $source;
+            $payload['source'] = $source;
         }
 
         $response = Http::timeout(15)
-            ->withHeaders([
-                'Authorization' => "DeepL-Auth-Key {$apiKey}",
-            ])
-            ->post("{$base}/translate", $payload);
+            ->withHeaders(['X-Goog-Api-Key' => $apiKey])
+            ->asJson()
+            ->post($base, $payload);
 
         if ($response->failed()) {
             throw new RuntimeException('Translation failed: ' . $response->body());
         }
 
-        $translated = $response->json('translations.0.text');
+        $translated = $response->json('data.translations.0.translatedText');
         if (!$translated) {
             throw new RuntimeException('Translation returned no text');
         }
