@@ -3,12 +3,15 @@
 namespace App\Services;
 
 use App\Models\Battle;
+use App\Services\Concerns\PicksMoves;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
 class PlayService
 {
-    public function __construct(private PokemonService $pokemon) {}
+    use PicksMoves;
+
+    public function __construct(protected PokemonService $pokemon) {}
 
     public function create(array $blueTeam, array $redTeam): array
     {
@@ -107,15 +110,4 @@ class PlayService
         ];
     }
 
-    private function pickMovesFromPokeApi(string $species): array
-    {
-        $details = $this->pokemon->details($species);
-        $moves = collect($details['moves'] ?? [])
-            ->map(fn ($m) => str_replace('-', '', $m['move']['name'] ?? ''))
-            ->filter()
-            ->take(4)
-            ->values()
-            ->all();
-        return $moves ?: ['tackle'];
-    }
 }
