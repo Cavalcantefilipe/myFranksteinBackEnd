@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Battle extends Model
 {
     protected $fillable = [
+        'external_id',
         'blue_team',
         'red_team',
         'winner',
         'turns',
         'log',
+        'mode',
     ];
 
     protected $casts = [

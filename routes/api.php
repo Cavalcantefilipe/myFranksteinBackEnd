@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\BattleController;
+use App\Http\Controllers\Api\PlayController;
 use App\Http\Controllers\Api\PokemonController;
 use App\Http\Controllers\Api\QuoteController;
 use App\Http\Controllers\Api\TranslateController;
@@ -19,4 +20,7 @@ Route::middleware('throttle:60,1')->group(function () {
     Route::post('/battles/simulate', [BattleController::class, 'simulate']);
     Route::get('/battles/recent', [BattleController::class, 'recent']);
     Route::get('/battles/{battle}', [BattleController::class, 'show']);
+
+    Route::post('/play/start', [PlayController::class, 'start']);
+    Route::post('/play/{battleId}/choose', [PlayController::class, 'choose']);
 });
